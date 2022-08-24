@@ -90,7 +90,7 @@ model UserTicket {
   ticketId  Int
   Ticket    Ticket   @relation(fields: [ticketId], references: [id])
   isPaid    Boolean  @default(false)
-  hasHotel  Boolean
+  hasHotel  Boolean? @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
