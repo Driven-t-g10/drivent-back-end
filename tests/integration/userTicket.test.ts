@@ -71,5 +71,12 @@ describe('POST /userTicket', () => {
 
       expect(response.status).toBe(httpStatus.CREATED);
     });
+
+    it('given word to ticketId should respond with status 422', async () => {
+      const token = await generateValidToken();
+      const response = await server.post(`/user-ticket/bbb`).set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+    });
   });
 });
