@@ -75,7 +75,7 @@ model Ticket {
   name       String       @db.VarChar(255)
   price      Float
   quantity   Int
-  eventId    Int          @unique
+  eventId    Int
   Event      Event        @relation(fields: [eventId], references: [id])
   hotelPrice Int
   createdAt  DateTime     @default(now())

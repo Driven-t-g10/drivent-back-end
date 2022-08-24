@@ -15,6 +15,28 @@ async function main() {
       },
     });
   }
+  let ticket = await prisma.ticket.findFirst();
+  if (!ticket) {
+    await prisma.ticket.create({
+      data: {
+        name: 'Presencial',
+        price: 250,
+        quantity: 300,
+        eventId: event.id,
+        hotelPrice: 350,
+      },
+    });
+
+    await prisma.ticket.create({
+      data: {
+        name: 'Online',
+        price: 100,
+        quantity: 300,
+        eventId: event.id,
+        hotelPrice: 0,
+      },
+    });
+  }
 
   console.log({ event });
 }
