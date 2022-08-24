@@ -3,12 +3,13 @@ import { prisma } from '@/config';
 import userService, { duplicatedEmailError } from '@/services/users-service';
 import faker from '@faker-js/faker';
 import bcrypt from 'bcrypt';
-import { createUser as createUserSeed } from '../factories';
+import { createEvent, createUser as createUserSeed } from '../factories';
 import { cleanDb } from '../helpers';
 
 beforeAll(async () => {
   await init();
   await cleanDb();
+  await createEvent();
 });
 
 describe('createUser', () => {
@@ -37,6 +38,7 @@ describe('createUser', () => {
         id: user.id,
       },
     });
+
     expect(user).toEqual(
       expect.objectContaining({
         id: dbUser.id,
