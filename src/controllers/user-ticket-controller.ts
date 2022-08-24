@@ -21,5 +21,5 @@ export async function getUserTicketByUserId(req: AuthenticatedRequest, res: Resp
 
   const userTicket = await userTicketService.getUserTicketByUserId(userId);
 
-  return res.status(httpStatus.OK).send(userTicket);
+  return res.status(httpStatus.OK).send({ userTicket });
 }
