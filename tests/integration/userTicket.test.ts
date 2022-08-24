@@ -39,7 +39,7 @@ describe('GET /userTicket', () => {
       const response = await server.get('/user-ticket').set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(httpStatus.OK);
-      expect(response.body).toBeDefined();
+      expect(response.body?.userTicket).toBeDefined();
     });
   });
 });
@@ -70,7 +70,6 @@ describe('POST /userTicket', () => {
       const response = await server.post(`/user-ticket/${ticket.id}`).set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(httpStatus.CREATED);
-      expect(response.body).toBeDefined();
     });
   });
 });
