@@ -1,7 +1,6 @@
 import app, { init } from '@/app';
 import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
-import * as jwt from 'jsonwebtoken';
 import supertest from 'supertest';
 import { createEnrollmentWithAddress, createEvent, createTicket, createUser, createUserTicket } from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
