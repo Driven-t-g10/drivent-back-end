@@ -18,6 +18,7 @@ model User {
   updatedAt  DateTime     @updatedAt
   Session    Session[]
   Enrollment Enrollment[]
+  UserTicket UserTicket[]
 }
 
 model Session {
@@ -38,6 +39,7 @@ model Event {
   endsAt             DateTime
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
+  Ticket             Ticket[]
 }
 
 model Enrollment {
@@ -66,4 +68,29 @@ model Address {
   Enrollment    Enrollment @relation(fields: [enrollmentId], references: [id])
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
+}
+
+model Ticket {
+  id         Int          @id @default(autoincrement())
+  name       String       @db.VarChar(255)
+  price      Float
+  quantity   Int
+  eventId    Int
+  Event      Event        @relation(fields: [eventId], references: [id])
+  hotelPrice Int
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  UserTicket UserTicket[]
+}
+
+model UserTicket {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  User      User     @relation(fields: [userId], references: [id])
+  ticketId  Int
+  Ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  isPaid    Boolean  @default(false)
+  hasHotel  Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
