@@ -1,6 +1,6 @@
-import { notFoundError } from '@/errors';
-import ticketRepository from '@/repositories/ticket-repository';
+import { notFoundError, unauthorizedError } from '@/errors';
 import userTicketRepository from '@/repositories/user-ticket-repository';
+import ticketRepository from '@/repositories/ticket-repository';
 import { Prisma, UserTicket } from '@prisma/client';
 
 async function createUserTicket(data: Prisma.UserTicketUncheckedCreateInput): Promise<UserTicket> {
@@ -22,9 +22,24 @@ async function getUserTicketByUserId(userId: number): Promise<UserTicket | null>
   return userTicket;
 }
 
+async function updatePayment(userId: number, ticketId: number) {
+  const ticket = await userTicketRepository.getTicketById(ticketId);
+
+  if (!ticket) {
+    throw notFoundError();
+  }
+
+  if (ticket.userId !== userId) {
+    throw unauthorizedError();
+  }
+
+  await userTicketRepository.updatePayment(ticketId);
+}
+
 const userTicketService = {
   createUserTicket,
   getUserTicketByUserId,
+  updatePayment
 };
 
 export default userTicketService;
