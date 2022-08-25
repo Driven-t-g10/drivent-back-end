@@ -1,4 +1,21 @@
 import { prisma } from '@/config';
+import { Prisma } from '@prisma/client';
+
+async function createUserTicket(data: Prisma.UserTicketUncheckedCreateInput) {
+  return prisma.userTicket.create({
+    data,
+  });
+}
+
+async function getUserTicketByUserId(userId: number) {
+  const userTicket = await prisma.userTicket.findMany({
+    where: {
+      userId,
+    },
+  });
+
+  return userTicket[0];
+}
 
 async function getTicketById(ticketId: number) {
   return prisma.userTicket.findFirst({
@@ -13,6 +30,11 @@ async function updatePayment(ticketId: number) {
   });
 }
 
-const userTicketRepository = { getTicketById, updatePayment };
+const userTicketRepository = {
+  createUserTicket,
+  getUserTicketByUserId,
+  getTicketById,
+  updatePayment,
+};
 
-export default userTicketRepository
+export default userTicketRepository;
