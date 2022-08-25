@@ -13,7 +13,7 @@ async function createUserTicket(data: CreateUserTicketParams): Promise<UserTicke
     data.hasHotel = false;
   }
 
-  return userTicketRepository.createUserTicket(data);
+  return userTicketRepository.createUserTicketOrUpdate(data);
 }
 
 async function getUserTicketByUserId(userId: number): Promise<UserTicket | null> {

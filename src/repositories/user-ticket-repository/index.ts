@@ -1,9 +1,17 @@
 import { prisma } from '@/config';
-import { Prisma } from '@prisma/client';
+import { UserTicket } from '@prisma/client';
 
-async function createUserTicket(data: Prisma.UserTicketUncheckedCreateInput) {
-  return prisma.userTicket.create({
-    data,
+async function createUserTicketOrUpdate(data: Partial<UserTicket>) {
+  const createOrUpdateUserTicket = {
+    hasHotel: data.hasHotel,
+    userId: data.userId,
+    ticketId: data.ticketId,
+  };
+
+  return prisma.userTicket.upsert({
+    where: { userId: data.userId },
+    update: createOrUpdateUserTicket,
+    create: createOrUpdateUserTicket,
   });
 }
 
@@ -31,7 +39,7 @@ async function updatePayment(ticketId: number) {
 }
 
 const userTicketRepository = {
-  createUserTicket,
+  createUserTicketOrUpdate,
   getUserTicketByUserId,
   getTicketById,
   updatePayment,
