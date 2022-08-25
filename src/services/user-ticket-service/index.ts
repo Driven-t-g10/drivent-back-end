@@ -1,23 +1,23 @@
 import { notFoundError, unauthorizedError } from '@/errors';
 import userTicketRepository from '@/repositories/user-ticket-repository';
+import { UserTicket } from '@prisma/client';
 import ticketRepository from '@/repositories/ticket-repository';
-import { Prisma, UserTicket } from '@prisma/client';
 
-async function createUserTicket(data: Prisma.UserTicketUncheckedCreateInput): Promise<UserTicket> {
+async function createUserTicket(data: CreateUserTicketParams): Promise<UserTicket> {
   const ticket = await ticketRepository.getTicketById(data.ticketId);
   if (!ticket) {
     throw notFoundError();
   }
 
-  return userTicketRepository.createUserTicket(data);
+  if (ticket.name.toLowerCase() === 'online') {
+    data.hasHotel = false;
+  }
+
+  return userTicketRepository.createUserTicketOrUpdate(data);
 }
 
 async function getUserTicketByUserId(userId: number): Promise<UserTicket | null> {
   const userTicket = await userTicketRepository.getUserTicketByUserId(userId);
-
-  if (!userTicket) {
-    throw notFoundError();
-  }
 
   return userTicket;
 }
@@ -39,7 +39,8 @@ async function updatePayment(userId: number, ticketId: number) {
 const userTicketService = {
   createUserTicket,
   getUserTicketByUserId,
-  updatePayment
+  updatePayment,
 };
 
+export type CreateUserTicketParams = Pick<UserTicket, 'ticketId' | 'hasHotel' | 'userId'>;
 export default userTicketService;
