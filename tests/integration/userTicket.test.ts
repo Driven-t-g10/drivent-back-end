@@ -89,7 +89,7 @@ describe('POST /userTicket', () => {
       expect(response.status).toBe(httpStatus.UNPROCESSABLE_ENTITY);
     });
 
-    it('not given a hasHotel should respond with status 422', async () => {
+    it('not given a hasHotel should respond with status 400', async () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const event = await createEvent();
@@ -100,5 +100,46 @@ describe('POST /userTicket', () => {
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
     });
+  });
+});
+
+describe('PATCH /user-ticket/payment/:id', () => {
+  it('should respond with status 401 if no token is given', async () => {
+    const response = await server.patch('/user-ticket/payment/1');
+
+    expect(response.status).toBe(httpStatus.UNAUTHORIZED);
+  });
+
+  describe('when token is valid', () => {
+    it('should respond with status 404 when there is no user-ticket for given id', async () => {
+      const token = await generateValidToken();
+
+      const response = await server.patch('/user-ticket/payment/1').set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(httpStatus.NOT_FOUND);
+    });
+
+    it('given a word to id should respond with status 400', async () => {
+      const token = await generateValidToken();
+
+      const response = await server.patch('/user-ticket/payment/a').set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+    });
+  });
+
+  it('given a valid id, should respond with status 200 and update the userTicket', async () => {
+    const user = await createUser();
+    await createEnrollmentWithAddress(user);
+    const event = await createEvent();
+    const ticket = await createTicket({ eventId: event.id });
+    const userTicket = await createUserTicket({ userId: user.id, ticketId: ticket.id });
+    const token = await generateValidToken(user);
+
+    const response = await server
+      .patch(`/user-ticket/payment/${userTicket.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).toBe(httpStatus.OK);
   });
 });

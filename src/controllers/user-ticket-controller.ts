@@ -25,3 +25,12 @@ export async function getUserTicketByUserId(req: AuthenticatedRequest, res: Resp
 
   return res.status(httpStatus.OK).send({ userTicket });
 }
+
+export async function updatePayment(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+  const { id } = req.params;
+
+  await userTicketService.updatePayment(userId, +id);
+
+  res.sendStatus(httpStatus.OK);
+}
