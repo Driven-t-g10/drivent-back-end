@@ -1,6 +1,6 @@
 import { createUserTicket, getUserTicketByUserId, updatePayment } from '@/controllers/user-ticket-controller';
 import { authenticateToken, validateBody, validateParams } from '@/middlewares';
-import { createUserTicketParams, createUserTicketSchema } from '@/schemas/user-ticket-schema';
+import { createUserTicketParams, createUserTicketSchema } from '@/schemas/user-ticket-schemas';
 import { updatePaymentParam } from '@/schemas';
 import { Router } from 'express';
 

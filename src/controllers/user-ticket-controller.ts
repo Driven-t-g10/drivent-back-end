@@ -1,5 +1,5 @@
 import { AuthenticatedRequest } from '@/middlewares';
-import { CreateUserTicketSchema } from '@/schemas/user-ticket-schema';
+import { CreateUserTicketSchema } from '@/schemas/user-ticket-schemas';
 import userTicketService from '@/services/user-ticket-service';
 import { Response } from 'express';
 import httpStatus from 'http-status';

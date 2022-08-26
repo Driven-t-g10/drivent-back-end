@@ -23,3 +23,10 @@ export function createUserTicket(params: Partial<UserTicket>): Promise<UserTicke
     },
   });
 }
+
+export function getUserTicket(userId: number | undefined = undefined): Promise<UserTicket> {
+  if (!userId) {
+    return prisma.userTicket.findFirst({});
+  }
+  return prisma.userTicket.findUnique({ where: { userId } });
+}
