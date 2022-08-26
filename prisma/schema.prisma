@@ -85,12 +85,12 @@ model Ticket {
 
 model UserTicket {
   id        Int      @id @default(autoincrement())
-  userId    Int
-  User      User     @relation(fields: [userId], references: [id])
+  userId    Int      @unique
   ticketId  Int
   Ticket    Ticket   @relation(fields: [ticketId], references: [id])
   isPaid    Boolean  @default(false)
-  hasHotel  Boolean
+  hasHotel  Boolean? @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
 }

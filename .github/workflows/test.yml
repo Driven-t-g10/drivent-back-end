@@ -1,6 +1,6 @@
 name: Test
 on:
-  pull_request:
+  [pull_request]
 env:
   POSTGRES_USERNAME: postgres
   POSTGRES_PASSWORD: top_secret

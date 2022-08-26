@@ -14,6 +14,12 @@ export function handleApplicationErrors(
     });
   }
 
+  if (err.name === 'InvalidParamsError') {
+    return res.status(httpStatus.UNPROCESSABLE_ENTITY).send({
+      message: err.message,
+    });
+  }
+
   if (err.name === 'ConflictError' || err.name === 'DuplicatedEmailError') {
     return res.status(httpStatus.CONFLICT).send({
       message: err.message,
