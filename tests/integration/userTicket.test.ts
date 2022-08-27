@@ -1,14 +1,24 @@
 import app, { init } from '@/app';
+import { disconnectDB } from '@/config';
 import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
-import { createEnrollmentWithAddress, createEvent, createTicket, createUser, createUserTicket } from '../factories';
+import {
+  createEnrollmentWithAddress,
+  createEvent,
+  createTicket,
+  createUser,
+  createUserTicket,
+  getUserTicket,
+} from '../factories';
 import { cleanDb, generateValidToken } from '../helpers';
 
-beforeAll(async () => {
+beforeEach(async () => {
   await init();
   await cleanDb();
 });
+
+afterEach(() => disconnectDB());
 
 const server = supertest(app);
 
@@ -20,7 +30,7 @@ describe('GET /userTicket', () => {
   });
 
   describe('when token is valid', () => {
-    it('should respond with empty object when there is no user-ticket for given user', async () => {
+    it('should respond with status 200 and an empty object when there is no user-ticket for given user', async () => {
       const token = await generateValidToken();
 
       const response = await server.get('/user-ticket').set('Authorization', `Bearer ${token}`);
@@ -29,7 +39,7 @@ describe('GET /userTicket', () => {
       expect(response.body).toEqual({});
     });
 
-    it('should respond with status 200 and enrollment data with address when there is a enrollment for given user', async () => {
+    it('should respond with status 200 and userTicket data when there is a userTicket for given user', async () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const token = await generateValidToken(user);
@@ -38,16 +48,18 @@ describe('GET /userTicket', () => {
       await createUserTicket({ userId: user.id, ticketId: ticket.id });
 
       const response = await server.get('/user-ticket').set('Authorization', `Bearer ${token}`);
+      const userTicket = await getUserTicket(user.id);
 
       expect(response.status).toBe(httpStatus.OK);
       expect(response.body?.userTicket).toBeDefined();
+      expect(JSON.stringify(response.body.userTicket)).toEqual(JSON.stringify(userTicket));
     });
   });
 });
 
 describe('POST /userTicket', () => {
   it('should respond with status 401 if no token is given', async () => {
-    const response = await server.post('/enrollments');
+    const response = await server.post('/user-ticket');
 
     expect(response.status).toBe(httpStatus.UNAUTHORIZED);
   });
@@ -64,7 +76,7 @@ describe('POST /userTicket', () => {
       expect(response.status).toBe(httpStatus.NOT_FOUND);
     });
 
-    it('given a valid ticketId should respond with status 201 and create a user-ticket', async () => {
+    it('given a valid ticketId and userTicketData, should respond with status 201 and create a user-ticket', async () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const event = await createEvent();
@@ -76,17 +88,24 @@ describe('POST /userTicket', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({ hasHotel: true });
 
+      const userTicket = await getUserTicket(user.id);
+
       expect(response.status).toBe(httpStatus.CREATED);
+      expect(JSON.stringify(response.body)).toEqual(JSON.stringify(userTicket));
     });
 
-    it('given word to ticketId should respond with status 422', async () => {
+    it('given word to ticketId should respond with status 400', async () => {
       const token = await generateValidToken();
+
       const response = await server
         .post(`/user-ticket/bbb`)
         .set('Authorization', `Bearer ${token}`)
         .send({ hasHotel: true });
 
-      expect(response.status).toBe(httpStatus.UNPROCESSABLE_ENTITY);
+      const userTicket = await getUserTicket();
+
+      expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      expect(userTicket).toBeNull();
     });
 
     it('not given a hasHotel should respond with status 400', async () => {
@@ -97,8 +116,10 @@ describe('POST /userTicket', () => {
       const token = await generateValidToken(user);
 
       const response = await server.post(`/user-ticket/${ticket.id}`).set('Authorization', `Bearer ${token}`);
+      const userTicket = await getUserTicket(user.id);
 
       expect(response.status).toBe(httpStatus.BAD_REQUEST);
+      expect(userTicket).toBeNull();
     });
   });
 });
