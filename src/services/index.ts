@@ -4,3 +4,4 @@ export * from './events-service';
 export * from './enrollments-service';
 export * from './tickets-service';
 export * from './user-ticket-service';
+export * from './hotels-service';
