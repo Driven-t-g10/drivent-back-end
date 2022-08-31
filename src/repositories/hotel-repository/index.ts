@@ -1,7 +1,7 @@
 import { prisma } from '@/config';
 
 async function getHotels() {
-  const hotels = await prisma.$queryRaw`SELECT h.id, h.name, 
+  const hotels = await prisma.$queryRaw`SELECT h.id, h.name, h.image, 
   SUM(r.beds) AS spaces, 
   COUNT(ur.id) AS occupied 
   FROM "Hotel" h
