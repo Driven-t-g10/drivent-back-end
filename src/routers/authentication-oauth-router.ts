@@ -5,6 +5,6 @@ import { Router } from 'express';
 
 const authenticationOAuthRouter = Router();
 
-authenticationOAuthRouter.post('/:code', validateParams(oauthParamsSchema), autehnticateOAuth);
+authenticationOAuthRouter.post('/oauth/:code', validateParams(oauthParamsSchema), autehnticateOAuth);
 
 export default authenticationOAuthRouter;

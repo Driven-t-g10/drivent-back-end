@@ -10,7 +10,7 @@ export async function createUser({ email, password }: CreateUserParams): Promise
 
   await validateUniqueEmailOrFail(email);
 
-  const hashedPassword = await bcrypt.hash(password, process.env.BCRYPT_SECRET);
+  const hashedPassword = await bcrypt.hash(password, 12);
   return userRepository.create({
     email,
     password: hashedPassword,

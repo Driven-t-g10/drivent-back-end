@@ -5,6 +5,7 @@ import qs from 'query-string';
 import createSession from './createSession';
 import bcrypt from 'bcrypt';
 import { accessDeniedError } from './errors';
+import { exclude } from '@/utils/prisma-utils';
 
 type SignInOrSignUpOAuthParams = {
   code: string;
@@ -13,11 +14,11 @@ type SignInOrSignUpOAuthParams = {
 async function signOrSignUpOAuth({ code }: SignInOrSignUpOAuthParams) {
   const githubToken = await getTokenGithub(code);
   const githubUserData = await getGithubUserData(githubToken);
-  const user = await getOrCreateUser(githubUserData.id.toString());
+  const user = await getOrCreateUser(githubUserData.id.toString(), githubUserData.node_id);
   const token = await createSession(user.id);
 
   return {
-    user,
+    user: exclude(user, 'githubId'),
     token,
   };
 }
@@ -62,11 +63,12 @@ async function getGithubUserData(accessToken: string) {
   }
 }
 
-async function getOrCreateUser(githubId: string, nodeId?: string) {
+async function getOrCreateUser(githubId: string, nodeId: string) {
   let user = await userRepository.findByGithubId(githubId);
-
+  /* eslint-disable no-console */
+  console.log(12, nodeId);
   if (!user) {
-    const password = await bcrypt.hash(nodeId, process.env.BCRYPT_SECRET);
+    const password = await bcrypt.hash(nodeId, 12);
     user = await userRepository.create({
       githubId,
       password,

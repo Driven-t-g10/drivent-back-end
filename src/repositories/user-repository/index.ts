@@ -22,7 +22,7 @@ async function create(data: Prisma.UserUncheckedCreateInput) {
 }
 
 async function findByGithubId(githubId: string) {
-  return prisma.user.findFirst({
+  return prisma.user.findUnique({
     select: { id: true, githubId: true },
     where: {
       githubId,
