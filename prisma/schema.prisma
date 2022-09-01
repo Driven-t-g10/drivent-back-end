@@ -20,6 +20,7 @@ model User {
   Session    Session[]
   Enrollment Enrollment[]
   UserTicket UserTicket[]
+  UserRoom   UserRoom?
 }
 
 model Session {
@@ -41,6 +42,7 @@ model Event {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   Ticket             Ticket[]
+  Hotel              Hotel[]
 }
 
 model Enrollment {
@@ -94,4 +96,36 @@ model UserTicket {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   User      User     @relation(fields: [userId], references: [id])
+}
+
+model Hotel {
+  id        Int      @id @default(autoincrement())
+  eventId   Int
+  Event     Event    @relation(fields: [eventId], references: [id])
+  name      String   @unique
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Room      Room[]
+}
+
+model Room {
+  id        Int        @id @default(autoincrement())
+  beds      Int
+  number    Int
+  hotelId   Int
+  Hotel     Hotel      @relation(fields: [hotelId], references: [id])
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  UserRoom  UserRoom[]
+
+  @@unique([number, hotelId])
+}
+
+model UserRoom {
+  id     Int  @id @default(autoincrement())
+  userId Int  @unique
+  User   User @relation(fields: [userId], references: [id])
+  roomId Int
+  Room   Room @relation(fields: [roomId], references: [id])
 }
