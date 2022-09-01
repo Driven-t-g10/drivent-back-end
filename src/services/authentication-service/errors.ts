@@ -6,3 +6,10 @@ export function invalidCredentialsError(): ApplicationError {
     message: 'email or password are incorrect',
   };
 }
+
+export function accessDeniedError(): ApplicationError {
+  return {
+    name: 'AccessDeniedError',
+    message: 'access denied',
+  };
+}
