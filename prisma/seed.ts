@@ -92,8 +92,6 @@ async function main() {
       }
     }
   }
-
-  console.log({ event });
 }
 
 main()
