@@ -1,6 +1,6 @@
 import { init } from '@/app';
 import { prisma } from '@/config';
-import authenticationService, { invalidCredentialsError } from '@/services/authentication-service';
+import { authenticationService, invalidCredentialsError } from '@/services/authentication-service';
 import faker from '@faker-js/faker';
 import { createUser } from '../factories';
 import { cleanDb } from '../helpers';
