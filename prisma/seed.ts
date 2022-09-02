@@ -37,8 +37,29 @@ async function main() {
       },
     });
   }
-
-  console.log({ event });
+  const hotel = await prisma.hotel.findFirst();
+  if (!hotel) {
+    await prisma.hotel.createMany({
+      data: [
+        {
+          eventId: event.id,
+          name: 'Driven Resort',
+          image: 'https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg',
+        },
+        {
+          eventId: event.id,
+          name: 'Driven Hotel',
+          image:
+            'https://conteudo.imguol.com.br/c/entretenimento/f2/2022/06/09/hotel-intercontinental-em-sao-paulo-1654791756214_v2_450x600.jpg',
+        },
+        {
+          eventId: event.id,
+          name: 'Driven Palace',
+          image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFVeamh72HbXmPRwMr0WCYhi75xg8I3fJBOA&usqp=CAU',
+        },
+      ],
+    });
+  }
 }
 
 main()
