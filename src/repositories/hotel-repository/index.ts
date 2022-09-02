@@ -1,5 +1,16 @@
 import { prisma } from '@/config';
 
+async function getRoomsWithUsers(hotelId: number) {
+  return prisma.room.findMany({
+    where: {
+      hotelId,
+    },
+    include: {
+      UserRoom: true,
+    },
+  });
+}
+
 async function getHotels() {
   const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
   (SUM(r.beds) - COUNT(ur.id)) AS spaces
@@ -28,6 +39,28 @@ async function getHotelRoomsTypeByHotelId(hotelId: number) {
   return hotelRooms;
 }
 
-const hotelRepository = { getHotels, getHotelRoomsTypeByHotelId };
+async function confirmReservation(roomId: number, userId: number) {
+  return prisma.userRoom.upsert({
+    where: {
+      userId,
+    },
+    create: {
+      roomId,
+      userId,
+    },
+    update: {
+      roomId,
+    },
+  });
+}
 
+async function getRoomById(id: number) {
+  return prisma.room.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+const hotelRepository = { getHotels, getHotelRoomsTypeByHotelId, getRoomsWithUsers, confirmReservation, getRoomById };
 export default hotelRepository;
