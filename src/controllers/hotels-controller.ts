@@ -1,7 +1,16 @@
-import hotelService from '@/services/hotel-service';
-import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '@/middlewares';
+import { Response } from 'express';
+import hotelService from '@/services/hotels-service';
 
-export async function getRoomsWithUsers(req: Request, res: Response) {
+export async function getHotels(req: AuthenticatedRequest, res: Response) {
+  const { userId } = req;
+
+  const hotels = await hotelService.getHotels(userId);
+
+  res.send(hotels);
+}
+
+export async function getRoomsWithUsers(req: AuthenticatedRequest, res: Response) {
   const { id } = req.params;
   const rooms = await hotelService.getRoomsWithUsers(Number(id));
 

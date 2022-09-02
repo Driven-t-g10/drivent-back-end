@@ -26,7 +26,7 @@ export function handleApplicationErrors(
     });
   }
 
-  if (err.name === 'InvalidCredentialsError') {
+  if (err.name === 'InvalidCredentialsError' || err.name === 'AccessDeniedError') {
     return res.status(httpStatus.UNAUTHORIZED).send({
       message: err.message,
     });
