@@ -16,3 +16,12 @@ export async function getRoomsWithUsers(req: AuthenticatedRequest, res: Response
 
   return res.status(200).send(rooms);
 }
+
+export async function confirmReservation(req: AuthenticatedRequest, res: Response) {
+  const { roomId } = req.body;
+  const { userId } = req;
+
+  await hotelService.confirmReservation(Number(roomId), userId);
+
+  return res.sendStatus(200);
+}

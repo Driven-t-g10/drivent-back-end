@@ -23,5 +23,28 @@ async function getHotels() {
   return hotels;
 }
 
-const hotelRepository = { getHotels, getRoomsWithUsers };
+async function confirmReservation(roomId: number, userId: number) {
+  return prisma.userRoom.upsert({
+    where: {
+      userId,
+    },
+    create: {
+      roomId,
+      userId,
+    },
+    update: {
+      roomId,
+    },
+  });
+}
+
+async function getRoomById(id: number) {
+  return prisma.room.findUnique({
+    where: {
+      id,
+    },
+  });
+}
+
+const hotelRepository = { getHotels, getRoomsWithUsers, confirmReservation, getRoomById };
 export default hotelRepository;
