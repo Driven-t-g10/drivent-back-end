@@ -1,7 +1,9 @@
 import { prisma, redis } from '@/config';
+import { eventSeedData } from '@/utils/eventSeedData';
 
 async function findFirst() {
   const cacheKey = 'event';
+  const EXPIRATION = 3600 * 6;
 
   try {
     const cachedEvent = await redis.get(cacheKey);
@@ -10,11 +12,11 @@ async function findFirst() {
 
       return JSON.parse(cachedEvent);
     } else {
-      console.log('return do pg');
+      console.log('return da seed');
 
-      const event = prisma.event.findFirst();
+      const event = eventSeedData();
 
-      redis.set(cacheKey, JSON.stringify(event));
+      redis.setEx(cacheKey, EXPIRATION, JSON.stringify(event));
 
       return event;
     }

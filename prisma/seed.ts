@@ -1,20 +1,19 @@
 import { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  let event = await prisma.event.findFirst();
-  if (!event) {
-    event = await prisma.event.create({
-      data: {
-        title: 'Driven.t',
-        logoImageUrl: 'https://files.driveneducation.com.br/images/logo-rounded.png',
-        backgroundImageUrl: 'linear-gradient(to right, #FA4098, #FFD77F)',
-        startsAt: dayjs().toDate(),
-        endsAt: dayjs().add(21, 'days').toDate(),
-      },
-    });
-  }
+  // let event = await prisma.event.findFirst();
+  // if (!event) {
+  //   event = await prisma.event.create({
+  //     data: {
+  //       title: 'Driven.t',
+  //       logoImageUrl: 'https://files.driveneducation.com.br/images/logo-rounded.png',
+  //       backgroundImageUrl: 'linear-gradient(to right, #FA4098, #FFD77F)',
+  //       startsAt: dayjs().toDate(),
+  //       endsAt: dayjs().add(21, 'days').toDate(),
+  //     },
+  //   });
+  // }
   let ticket = await prisma.ticket.findFirst();
   if (!ticket) {
     await prisma.ticket.create({
@@ -22,7 +21,6 @@ async function main() {
         name: 'Presencial',
         price: 250,
         quantity: 300,
-        eventId: event.id,
         hotelPrice: 350,
       },
     });
@@ -32,7 +30,6 @@ async function main() {
         name: 'Online',
         price: 100,
         quantity: 300,
-        eventId: event.id,
         hotelPrice: 0,
       },
     });

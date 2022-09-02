@@ -5,7 +5,7 @@ dotenv.config();
 
 async function getHotels() {
   const cacheKey = 'hotels';
-  const EXPIRATION = 3600 * 2;
+  const EXPIRATION = 3600;
 
   try {
     const cachedHotels = await redis.get(cacheKey);
