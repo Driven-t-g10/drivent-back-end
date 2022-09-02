@@ -16,9 +16,9 @@ async function getHotels() {
     } else {
       console.log('return do pg');
 
-      const hotels = await prisma.$queryRaw`SELECT h.id, h.name, h.image,
-      SUM(r.beds) AS spaces,
-      COUNT(ur.id) AS occupied
+      const hotels = await prisma.$queryRaw<any[]>`
+      SELECT h.id, h.name, h.image, 
+      (SUM(r.beds) - COUNT(ur.id)) AS spaces
       FROM "Hotel" h
       JOIN "Room" r ON r."hotelId" = h.id
       LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
