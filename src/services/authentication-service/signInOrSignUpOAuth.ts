@@ -65,8 +65,10 @@ async function getGithubUserData(accessToken: string) {
 
 async function getOrCreateUser(githubId: string, nodeId: string) {
   let user = await userRepository.findByGithubId(githubId);
+
+  const saltOrRounds = parseInt(process.env.BCRYPT_SECRET, 10);
   if (!user) {
-    const password = await bcrypt.hash(nodeId, process.env.BCRYPT_SECRET);
+    const password = await bcrypt.hash(nodeId, saltOrRounds);
     user = await userRepository.create({
       githubId,
       password,
