@@ -8,12 +8,8 @@ async function findFirst() {
   try {
     const cachedEvent = await redis.get(cacheKey);
     if (cachedEvent) {
-      console.log('return do redis');
-
       return JSON.parse(cachedEvent);
     } else {
-      console.log('return da seed');
-
       const event = eventSeedData();
 
       redis.setEx(cacheKey, EXPIRATION, JSON.stringify(event));
