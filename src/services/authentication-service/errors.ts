@@ -7,9 +7,9 @@ export function invalidCredentialsError(): ApplicationError {
   };
 }
 
-export function accessDeniedError(): ApplicationError {
+export function accessDeniedError(error?: string): ApplicationError {
   return {
     name: 'AccessDeniedError',
-    message: 'access denied',
+    message: `access denied ${error ? error : ''}`,
   };
 }

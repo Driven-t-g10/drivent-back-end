@@ -44,7 +44,7 @@ async function getTokenGithub(code: string) {
     const parsedData = qs.parse(data);
     return parsedData.access_token as string;
   } catch (error) {
-    throw accessDeniedError();
+    throw accessDeniedError(error);
   }
 }
 
@@ -59,7 +59,7 @@ async function getGithubUserData(accessToken: string) {
 
     return data;
   } catch (error) {
-    throw accessDeniedError();
+    throw accessDeniedError(error);
   }
 }
 
