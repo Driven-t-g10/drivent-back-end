@@ -3,7 +3,7 @@ import { eventSeedData } from '@/utils/eventSeedData';
 
 async function findFirst() {
   const cacheKey = 'event';
-  const EXPIRATION = 3600 * 6;
+  // const EXPIRATION = 3600 * 6;
 
   try {
     const cachedEvent = await redis.get(cacheKey);
@@ -12,7 +12,7 @@ async function findFirst() {
     } else {
       const event = eventSeedData();
 
-      redis.setEx(cacheKey, EXPIRATION, JSON.stringify(event));
+      redis.set(cacheKey, JSON.stringify(event));
 
       return event;
     }

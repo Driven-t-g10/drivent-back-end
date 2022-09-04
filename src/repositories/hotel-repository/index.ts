@@ -17,30 +17,26 @@ async function getRoomsWithUsers(hotelId: number) {
 
 async function getHotels() {
   const cacheKey = 'hotels';
-  const EXPIRATION = 3600;
+  // const EXPIRATION = 3600;
 
   try {
-    // const cachedHotels = await redis.get(cacheKey);
-    // if (cachedHotels) {
-    //   console.log('return do redis');
-    //   const hotels: Array<Hotel> = JSON.parse(cachedHotels);
-    //   console.log(hotels);
-    //   return hotels;
-    // } else {
-    console.log('return do pg');
+    const cachedHotels = await redis.get(cacheKey);
+    if (cachedHotels) {
+      const hotels: Array<Hotel> = JSON.parse(cachedHotels);
 
-    const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
+      return hotels;
+    } else {
+      const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
       (SUM(r.beds) - COUNT(ur.id)) AS spaces
       FROM "Hotel" h
       JOIN "Room" r ON r."hotelId" = h.id
       LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
       GROUP BY h.id`;
 
-    redis.setEx(cacheKey, EXPIRATION, JSON.stringify(hotels)); //TODO: adicionar info de vagas;
-    //TODO: quando reservar quarto, limpar redis
+      redis.set(cacheKey, JSON.stringify(hotels));
 
-    return hotels;
-    // }
+      return hotels;
+    }
   } catch (error) {
     console.log(error);
   }
@@ -64,6 +60,9 @@ async function getHotelRoomsTypeByHotelId(hotelId: number) {
 }
 
 async function confirmReservation(roomId: number, userId: number) {
+  const cacheKey = 'hotels';
+  redis.del(cacheKey);
+
   return prisma.userRoom.upsert({
     where: {
       userId,
