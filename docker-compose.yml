@@ -17,6 +17,13 @@ services:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
+      BCRYPT_SECRET: 11
+      REDIRECT_URL: ${REDIRECT_URL}
+      CLIENT_ID: ${CLIENT_ID}
+      CLIENT_SECRET: ${CLIENT_SECRET}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_URL: ${REDIS_URL}
   drivent-postgres-production:
     image: postgres:13-alpine
     environment:
