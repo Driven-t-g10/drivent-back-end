@@ -1,5 +1,17 @@
 version: '3'
 services:
+  drivent-redis:
+    container_name: drivent-redis
+    image: redis
+    restart: always
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    command: redis-server
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_URL: ${REDIS_URL}
+
   drivent-postgres-development:
     image: postgres:13-alpine
     container_name: drivent-postgres-development
@@ -20,6 +32,7 @@ services:
     container_name: drivent-development
     depends_on:
       - drivent-postgres-development
+      - drivent-redis
     logging:
       driver: 'json-file'
       options:

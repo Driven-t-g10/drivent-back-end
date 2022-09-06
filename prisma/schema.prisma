@@ -32,19 +32,6 @@ model Session {
   updatedAt DateTime @updatedAt
 }
 
-model Event {
-  id                 Int      @id @default(autoincrement())
-  title              String   @db.VarChar(255)
-  backgroundImageUrl String   @db.VarChar(255)
-  logoImageUrl       String   @db.VarChar(255)
-  startsAt           DateTime
-  endsAt             DateTime
-  createdAt          DateTime @default(now())
-  updatedAt          DateTime @updatedAt
-  Ticket             Ticket[]
-  Hotel              Hotel[]
-}
-
 model Enrollment {
   id        Int       @id @default(autoincrement())
   name      String    @db.VarChar(255)
@@ -78,8 +65,6 @@ model Ticket {
   name       String       @db.VarChar(255)
   price      Float
   quantity   Int
-  eventId    Int
-  Event      Event        @relation(fields: [eventId], references: [id])
   hotelPrice Int
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -100,8 +85,6 @@ model UserTicket {
 
 model Hotel {
   id        Int      @id @default(autoincrement())
-  eventId   Int
-  Event     Event    @relation(fields: [eventId], references: [id])
   name      String   @unique
   image     String
   createdAt DateTime @default(now())

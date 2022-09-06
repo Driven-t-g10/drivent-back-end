@@ -1,20 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import dayjs from 'dayjs';
 const prisma = new PrismaClient();
 
 async function main() {
-  let event = await prisma.event.findFirst();
-  if (!event) {
-    event = await prisma.event.create({
-      data: {
-        title: 'Driven.t',
-        logoImageUrl: 'https://files.driveneducation.com.br/images/logo-rounded.png',
-        backgroundImageUrl: 'linear-gradient(to right, #FA4098, #FFD77F)',
-        startsAt: dayjs().toDate(),
-        endsAt: dayjs().add(21, 'days').toDate(),
-      },
-    });
-  }
   let ticket = await prisma.ticket.findFirst();
   if (!ticket) {
     await prisma.ticket.create({
@@ -22,7 +9,6 @@ async function main() {
         name: 'Presencial',
         price: 250,
         quantity: 300,
-        eventId: event.id,
         hotelPrice: 350,
       },
     });
@@ -32,7 +18,6 @@ async function main() {
         name: 'Online',
         price: 100,
         quantity: 300,
-        eventId: event.id,
         hotelPrice: 0,
       },
     });
@@ -42,21 +27,18 @@ async function main() {
     hotel = await prisma.hotel.create({
       data: {
         name: 'Driven Resort',
-        eventId: event.id,
         image: 'https://media-cdn.tripadvisor.com/media/photo-s/16/1a/ea/54/hotel-presidente-4s.jpg',
       },
     });
     await prisma.hotel.create({
       data: {
         name: 'Driven Palace',
-        eventId: event.id,
         image: 'https://www.ahstatic.com/photos/5451_ho_00_p_1024x768.jpg',
       },
     });
     await prisma.hotel.create({
       data: {
         name: 'Driven World',
-        eventId: event.id,
         image:
           'https://imgcy.trivago.com/c_lfill,d_dummy.jpeg,e_sharpen:60,f_auto,h_450,q_auto,w_450/itemimages/96/95/96959_v6.jpeg',
       },
@@ -92,8 +74,6 @@ async function main() {
       }
     }
   }
-
-  console.log({ event });
 }
 
 main()

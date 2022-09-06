@@ -8,6 +8,14 @@ async function getHotels(userId: number) {
 
   const hotels = await hotelRepository.getHotels();
 
+  for (let i = 0; i < hotels.length; i++) {
+    const roomTypes = await hotelRepository.getHotelRoomsTypeByHotelId(hotels[i].id);
+
+    hotels[i].roomTypes = [];
+
+    roomTypes.forEach((roomType) => hotels[i].roomTypes.push(roomType.roomType));
+  }
+
   return hotels;
 }
 
