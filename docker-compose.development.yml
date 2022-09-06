@@ -10,7 +10,7 @@ services:
     environment:
       REDIS_HOST: ${REDIS_HOST}
       REDIS_PORT: ${REDIS_PORT}
-      REDIS_URL: redis://${REDIS_HOST}:${REDIS_PORT}
+      REDIS_URL: ${REDIS_URL}
 
   drivent-postgres-development:
     image: postgres:13-alpine
