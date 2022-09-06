@@ -24,6 +24,7 @@ services:
     volumes:
       - drivent-postgres-data:/var/lib/postgresql/data
     command: postgres -p ${POSTGRES_PORT}
+
   drivent-development:
     build:
       context: .
