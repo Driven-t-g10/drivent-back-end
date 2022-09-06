@@ -118,6 +118,7 @@ model Activity {
   id           Int            @id @default(autoincrement())
   name         String
   place        String
+  vacancy      Int
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   Schedule     Schedule[]
