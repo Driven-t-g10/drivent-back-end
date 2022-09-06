@@ -36,3 +36,14 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - /usr/src/drivent/front-end:/var/www/html
+  drivent-redis:
+    container_name: drivent-redis
+    image: redis
+    restart: always
+    ports:
+      - '${REDIS_PORT}:${REDIS_PORT}'
+    command: redis-server
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_URL: redis://${REDIS_HOST}:${REDIS_PORT}

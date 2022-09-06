@@ -1,4 +1,8 @@
-import { prisma } from '@/config';
+import { prisma, redis } from '@/config';
+import { Hotel } from '@prisma/client';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function getRoomsWithUsers(hotelId: number) {
   return prisma.room.findMany({
@@ -12,14 +16,30 @@ async function getRoomsWithUsers(hotelId: number) {
 }
 
 async function getHotels() {
-  const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
-  (SUM(r.beds) - COUNT(ur.id)) AS spaces
-  FROM "Hotel" h
-  JOIN "Room" r ON r."hotelId" = h.id
-  LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
-  GROUP BY h.id`;
+  const cacheKey = 'hotels';
+  // const EXPIRATION = 3600;
 
-  return hotels;
+  try {
+    const cachedHotels = await redis.get(cacheKey);
+    if (cachedHotels) {
+      const hotels: Array<Hotel> = JSON.parse(cachedHotels);
+
+      return hotels;
+    } else {
+      const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
+      (SUM(r.beds) - COUNT(ur.id)) AS spaces
+      FROM "Hotel" h
+      JOIN "Room" r ON r."hotelId" = h.id
+      LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
+      GROUP BY h.id`;
+
+      redis.set(cacheKey, JSON.stringify(hotels));
+
+      return hotels;
+    }
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 async function getHotelRoomsTypeByHotelId(hotelId: number) {
@@ -40,6 +60,9 @@ async function getHotelRoomsTypeByHotelId(hotelId: number) {
 }
 
 async function confirmReservation(roomId: number, userId: number) {
+  const cacheKey = 'hotels';
+  redis.del(cacheKey);
+
   return prisma.userRoom.upsert({
     where: {
       userId,
