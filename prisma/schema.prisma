@@ -11,16 +11,17 @@ datasource db {
 }
 
 model User {
-  id         Int          @id @default(autoincrement())
-  email      String?      @unique @db.VarChar(255)
-  password   String       @db.VarChar(255)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  githubId   String?      @unique @db.VarChar(255)
-  Session    Session[]
-  Enrollment Enrollment[]
-  UserTicket UserTicket[]
-  UserRoom   UserRoom?
+  id           Int            @id @default(autoincrement())
+  email        String?        @unique @db.VarChar(255)
+  password     String         @db.VarChar(255)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  githubId     String?        @unique @db.VarChar(255)
+  Session      Session[]
+  Enrollment   Enrollment[]
+  UserTicket   UserTicket[]
+  UserRoom     UserRoom?
+  UserActivity UserActivity[]
 }
 
 model Session {
@@ -111,4 +112,35 @@ model UserRoom {
   User   User @relation(fields: [userId], references: [id])
   roomId Int
   Room   Room @relation(fields: [roomId], references: [id])
+}
+
+model Activity {
+  id           Int            @id @default(autoincrement())
+  name         String
+  place        String
+  vacancy      Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  Schedule     Schedule[]
+  UserActivity UserActivity[]
+}
+
+model Schedule {
+  id         Int      @id @default(autoincrement())
+  date       String
+  time       String
+  activityId Int
+  Activity   Activity @relation(fields: [activityId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model UserActivity {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  User       User     @relation(fields: [userId], references: [id])
+  activityId Int
+  Activity   Activity @relation(fields: [activityId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
