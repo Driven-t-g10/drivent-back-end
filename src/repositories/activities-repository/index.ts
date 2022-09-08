@@ -12,5 +12,20 @@ async function getPlaces() {
   });
 }
 
-const activitiesRepositoy = { getDates, getPlaces };
+async function getActivitiesByPlaceAndDate(place: string, date: string) {
+  return prisma.activity.findMany({
+    where: {
+      place,
+    },
+    include: {
+      Schedule: {
+        where: {
+          date,
+        },
+      },
+    },
+  });
+}
+
+const activitiesRepositoy = { getDates, getPlaces, getActivitiesByPlaceAndDate };
 export default activitiesRepositoy;

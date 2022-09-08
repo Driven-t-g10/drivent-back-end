@@ -12,3 +12,11 @@ export async function getPlaces(req: Request, res: Response) {
 
   res.status(200).send(result);
 }
+
+export async function getActivitiesByPlaceAndDate(req: Request, res: Response) {
+  const { place, date } = req.query;
+
+  const result = await activitiesService.getActivitiesByPlaceAndDate(String(place), String(date));
+
+  res.status(200).send(result);
+}
