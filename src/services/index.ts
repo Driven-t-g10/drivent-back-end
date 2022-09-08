@@ -5,3 +5,4 @@ export * from './enrollments-service';
 export * from './tickets-service';
 export * from './user-ticket-service';
 export * from './hotels-service';
+export * from './activities-service';

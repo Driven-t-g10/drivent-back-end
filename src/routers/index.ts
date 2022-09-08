@@ -6,3 +6,4 @@ export * from './ticket-router';
 export * from './user-ticket-router';
 export * from './hotel-router';
 export * from './user-room-router';
+export * from './activities-router';
