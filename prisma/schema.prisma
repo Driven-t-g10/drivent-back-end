@@ -115,32 +115,33 @@ model UserRoom {
 }
 
 model Activity {
-  id           Int            @id @default(autoincrement())
-  name         String
-  place        String
-  vacancy      Int
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  Schedule     Schedule[]
-  UserActivity UserActivity[]
+  id        Int        @id @default(autoincrement())
+  name      String
+  place     String
+  vacancy   Int
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  Schedule  Schedule[]
 }
 
 model Schedule {
-  id         Int      @id @default(autoincrement())
-  date       String
-  time       String
-  activityId Int
-  Activity   Activity @relation(fields: [activityId], references: [id])
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           Int            @id @default(autoincrement())
+  date         String
+  startTime    String
+  endTime      String
+  activityId   Int
+  Activity     Activity       @relation(fields: [activityId], references: [id])
+  UserActivity UserActivity[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 }
 
 model UserActivity {
   id         Int      @id @default(autoincrement())
   userId     Int
   User       User     @relation(fields: [userId], references: [id])
-  activityId Int
-  Activity   Activity @relation(fields: [activityId], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  Schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  scheduleId Int
 }

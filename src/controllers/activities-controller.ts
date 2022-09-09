@@ -20,3 +20,11 @@ export async function getActivitiesByPlaceAndDate(req: Request, res: Response) {
 
   res.status(200).send(result);
 }
+
+export async function getScheduleUsers(req: Request, res: Response) {
+  const { scheduleId } = req.params;
+
+  const result = await activitiesService.getScheduleUsers(Number(scheduleId));
+
+  res.status(200).send(result);
+}
