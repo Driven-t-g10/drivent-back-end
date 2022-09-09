@@ -36,6 +36,16 @@ async function getActivitiesByPlaceAndDate(place: string, date: string) {
   });
 }
 
+async function getActivityByScheduleId(scheduleId: number) {
+  return prisma.activity.findFirst({
+    where: {
+      Schedule: {
+        some: { id: scheduleId },
+      },
+    },
+  });
+}
+
 async function getUserActivities(userId: number) {
   const schedulesIds = await prisma.userActivity.findMany({
     where: {
@@ -75,5 +85,13 @@ async function getScheduleUsers(scheduleId: number) {
   });
 }
 
-const activitiesRepositoy = { getDates, getPlaces, getActivitiesByPlaceAndDate, getUserActivities, getScheduleUsers };
+const activitiesRepositoy = {
+  getDates,
+  getPlaces,
+  getActivitiesByPlaceAndDate,
+  getUserActivities,
+  getScheduleUsers,
+  getActivityByScheduleId,
+};
+
 export default activitiesRepositoy;
