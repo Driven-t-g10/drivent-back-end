@@ -20,10 +20,16 @@ async function getPlaces() {
   return result;
 }
 
-async function getActivitiesByPlaceAndDate(place: string, date: string) {
+async function getActivitiesByPlaceAndDate(place: string, date: string, userId: number) {
   const result = await activitiesRepositoy.getActivitiesByPlaceAndDate(place, date);
-  const activities = result.map((activity) => {
-    if (activity.Schedule.length > 0) {
+  const activities = result.map((resultActivity) => {
+    if (resultActivity.Schedule.length > 0) {
+      const activity = resultActivity;
+      for (let i = 0; i < activity.Schedule.length; i += 1) {
+        const schedule = activity.Schedule[i];
+        const isRegistered = schedule.UserActivity.some((UserActivity) => UserActivity.userId === userId);
+        activity.Schedule[i] = { ...schedule, isRegistered } as any;
+      }
       return activity;
     }
   });

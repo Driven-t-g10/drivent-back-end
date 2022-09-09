@@ -75,9 +75,9 @@ async function main() {
     }
   }
 
-  const activity = await prisma.activity.findFirst();
+  let activity = await prisma.activity.findFirst();
   if (!activity) {
-    await prisma.activity.create({
+    activity = await prisma.activity.create({
       data: {
         name: 'Minecraft: montando o PC ideal',
         place: 'Auditório Principal',
@@ -113,16 +113,16 @@ async function main() {
       },
     });
 
-    for (let i = 0; i < 3; i++) {
+    for (let i = activity.id; i < activity.id + 3; i++) {
       let date: string;
-      if (i === 0) date = 'Sexta, 22/10';
-      else if (i === 1) date = 'Sábado, 23/10';
+      if (i === activity.id) date = 'Sexta, 22/10';
+      else if (i === activity.id + 1) date = 'Sábado, 23/10';
       else date = 'Domingo, 24/10';
 
       await prisma.schedule.create({
         data: {
           date,
-          activityId: 1,
+          activityId: activity.id,
           startTime: '09:00',
           endTime: '10:00',
         },
@@ -131,7 +131,7 @@ async function main() {
       await prisma.schedule.create({
         data: {
           date,
-          activityId: 2,
+          activityId: activity.id + 1,
           startTime: '10:00',
           endTime: '11:00',
         },
@@ -140,7 +140,7 @@ async function main() {
       await prisma.schedule.create({
         data: {
           date,
-          activityId: 3,
+          activityId: activity.id + 2,
           startTime: '09:00',
           endTime: '11:00',
         },
@@ -149,7 +149,7 @@ async function main() {
       await prisma.schedule.create({
         data: {
           date,
-          activityId: 4,
+          activityId: activity.id + 3,
           startTime: '09:00',
           endTime: '10:00',
         },
@@ -158,12 +158,21 @@ async function main() {
       await prisma.schedule.create({
         data: {
           date,
-          activityId: 5,
+          activityId: activity.id + 4,
           startTime: '10:00',
           endTime: '11:00',
         },
       });
     }
+
+    await prisma.schedule.create({
+      data: {
+        date: 'Sexta, 22/10',
+        activityId: activity.id + 4,
+        startTime: '12:00',
+        endTime: '13:30',
+      },
+    });
   }
 }
 

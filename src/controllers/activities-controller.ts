@@ -1,4 +1,6 @@
+import { AuthenticatedRequest } from '@/middlewares';
 import activitiesService from '@/services/activities-service';
+import { Activity } from '@prisma/client';
 import { Request, Response } from 'express';
 
 export async function getDates(req: Request, res: Response) {
@@ -13,12 +15,13 @@ export async function getPlaces(req: Request, res: Response) {
   res.status(200).send(result);
 }
 
-export async function getActivitiesByPlaceAndDate(req: Request, res: Response) {
+export async function getActivitiesByPlaceAndDate(req: AuthenticatedRequest, res: Response) {
   const { place, date } = req.query;
+  const { userId } = req;
 
-  const result = await activitiesService.getActivitiesByPlaceAndDate(String(place), String(date));
+  const activities = await activitiesService.getActivitiesByPlaceAndDate(String(place), String(date), userId);
 
-  res.status(200).send(result);
+  res.status(200).send(activities);
 }
 
 export async function getScheduleUsers(req: Request, res: Response) {
