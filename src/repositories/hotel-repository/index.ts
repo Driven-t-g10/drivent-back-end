@@ -18,27 +18,37 @@ async function getRoomsWithUsers(hotelId: number) {
 async function getHotels() {
   const cacheKey = 'hotels';
   // const EXPIRATION = 3600;
-
-  try {
-    const cachedHotels = await redis.get(cacheKey);
-    if (cachedHotels) {
-      const hotels: Array<Hotel> = JSON.parse(cachedHotels);
-
-      return hotels;
-    } else {
-      const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
+  if (process.env.MODE === 'test') {
+    const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
       (SUM(r.beds) - COUNT(ur.id)) AS spaces
       FROM "Hotel" h
       JOIN "Room" r ON r."hotelId" = h.id
       LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
       GROUP BY h.id`;
 
-      redis.set(cacheKey, JSON.stringify(hotels));
+    return hotels;
+  } else {
+    try {
+      const cachedHotels = await redis.get(cacheKey);
+      if (cachedHotels) {
+        const hotels: Array<Hotel> = JSON.parse(cachedHotels);
 
-      return hotels;
+        return hotels;
+      } else {
+        const hotels = await prisma.$queryRaw<any[]>`SELECT h.id, h.name, h.image, 
+        (SUM(r.beds) - COUNT(ur.id)) AS spaces
+        FROM "Hotel" h
+        JOIN "Room" r ON r."hotelId" = h.id
+        LEFT JOIN "UserRoom" ur ON ur."roomId" = r.id
+        GROUP BY h.id`;
+
+        redis.set(cacheKey, JSON.stringify(hotels));
+
+        return hotels;
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
 }
 

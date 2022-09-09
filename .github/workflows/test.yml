@@ -6,7 +6,7 @@ env:
   POSTGRES_HOST: drivent-postgres-test
   POSTGRES_PORT: 5432
   POSTGRES_DB: drivent_test
-  NODE_ENV: test
+  MODE: test
   JWT_SECRET: top_secret
   DATABASE_URL: postgres://postgres:top_secret@drivent-postgres-test:5432/drivent_test?schema=public
 jobs:

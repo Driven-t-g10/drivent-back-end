@@ -1,5 +1,5 @@
 import app, { init } from '@/app';
-import { disconnectDB, prisma } from '@/config';
+import { prisma } from '@/config';
 import { duplicatedEmailError } from '@/services/users-service';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
@@ -11,10 +11,6 @@ import { cleanDb } from '../helpers';
 beforeAll(async () => {
   await init();
   await cleanDb();
-});
-
-afterAll(async () => {
-  disconnectDB();
 });
 
 const server = supertest(app);

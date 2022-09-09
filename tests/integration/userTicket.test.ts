@@ -2,7 +2,6 @@ import app, { init } from '@/app';
 import { disconnectDB } from '@/config';
 import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
-import { number } from 'joi';
 import supertest from 'supertest';
 import {
   createEnrollmentWithAddress,
@@ -22,9 +21,7 @@ beforeAll(async () => {
   await init();
 });
 
-afterAll(async () => {
-  disconnectDB();
-});
+// afterEach(() => disconnectDB());
 
 const server = supertest(app);
 
@@ -49,6 +46,7 @@ describe('GET /userTicket', () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const token = await generateValidToken(user);
+      const event = await createEvent();
       const ticket = await createTicket();
       await createUserTicket({ userId: user.id, ticketId: ticket.id });
 
