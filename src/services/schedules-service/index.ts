@@ -90,11 +90,13 @@ function convertToMilliseconds(schedule: Schedule, time: string) {
   scheduleDate.setHours(parseInt(hour));
   scheduleDate.setMinutes(parseInt(minute));
 
-  return scheduleDate.getMilliseconds();
+  return scheduleDate.getTime();
 }
 
 function compareIntervals(userScheduleInterval: number, chosenScheduleInterval: { start: number; end: number }) {
-  return userScheduleInterval >= chosenScheduleInterval.start && userScheduleInterval <= chosenScheduleInterval.end;
+  return (
+    userScheduleInterval >= chosenScheduleInterval.start + 1 && userScheduleInterval <= chosenScheduleInterval.end - 1
+  );
 }
 
 const schedulesService = { setUserSchedule };
