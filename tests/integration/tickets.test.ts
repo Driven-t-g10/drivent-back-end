@@ -3,10 +3,15 @@ import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { cleanDb, generateValidToken } from '../helpers';
 import { createEnrollmentWithAddress, createEvent, createTicket, createUser } from '../factories';
+import { disconnectDB } from '@/config';
 
 beforeAll(async () => {
   await init();
   await cleanDb();
+});
+
+afterAll(async () => {
+  disconnectDB();
 });
 
 const server = supertest(app);

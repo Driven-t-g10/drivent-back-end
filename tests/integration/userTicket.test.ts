@@ -15,11 +15,16 @@ import {
 import { cleanDb, generateValidToken } from '../helpers';
 
 beforeEach(async () => {
-  await init();
   await cleanDb();
 });
 
-afterEach(() => disconnectDB());
+beforeAll(async () => {
+  await init();
+});
+
+afterAll(async () => {
+  disconnectDB();
+});
 
 const server = supertest(app);
 
