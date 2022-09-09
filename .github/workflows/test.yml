@@ -1,12 +1,12 @@
 name: Test
-on:
-  [pull_request]
+on: [pull_request]
 env:
   POSTGRES_USERNAME: postgres
   POSTGRES_PASSWORD: top_secret
   POSTGRES_HOST: drivent-postgres-test
   POSTGRES_PORT: 5432
   POSTGRES_DB: drivent_test
+  MODE: test
   JWT_SECRET: top_secret
   DATABASE_URL: postgres://postgres:top_secret@drivent-postgres-test:5432/drivent_test?schema=public
 jobs:
@@ -18,6 +18,19 @@ jobs:
         node-version: [16.x]
     steps:
       - uses: actions/checkout@v2
+
+      - name: Environment variables setup
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_POSTGRES_USERNAME: postgres
+          envkey_POSTGRES_PASSWORD: top_secret
+          envkey_POSTGRES_HOST: drivent-postgres-test
+          envkey_POSTGRES_PORT: 5432
+          envkey_POSTGRES_DB: drivent_test
+          envkey_MODE: test
+          envkey_JWT_SECRET: top_secret
+          envkey_DATABASE_URL: postgres://postgres:top_secret@drivent-postgres-test:5432/drivent_test?schema=public
+          file_name: .env.test
 
       - name: Build
         run: npm run ci:build
