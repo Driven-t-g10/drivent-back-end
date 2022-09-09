@@ -18,5 +18,13 @@ async function getActivitiesByPlaceAndDate(place: string, date: string) {
   return activities;
 }
 
-const activitiesService = { getDates, getPlaces, getActivitiesByPlaceAndDate };
+async function getScheduleUsers(scheduleId: number) {
+  const result = await activitiesRepositoy.getScheduleUsers(scheduleId);
+  if (result === null) {
+    return [];
+  }
+  return result.UserActivity;
+}
+
+const activitiesService = { getDates, getPlaces, getActivitiesByPlaceAndDate, getScheduleUsers };
 export default activitiesService;

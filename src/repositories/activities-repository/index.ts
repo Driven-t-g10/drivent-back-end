@@ -22,10 +22,56 @@ async function getActivitiesByPlaceAndDate(place: string, date: string) {
         where: {
           date,
         },
+        include: {
+          UserActivity: {
+            select: {
+              userId: true,
+            },
+          },
+        },
       },
     },
   });
 }
 
-const activitiesRepositoy = { getDates, getPlaces, getActivitiesByPlaceAndDate };
+async function getUserActivities(userId: number) {
+  const schedulesIds = await prisma.userActivity.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      scheduleId: true,
+    },
+  });
+  const activities = [];
+  for (const scheduleId of schedulesIds) {
+    const activity = await prisma.schedule.findUnique({
+      where: {
+        id: scheduleId.scheduleId,
+      },
+      include: {
+        Activity: true,
+      },
+    });
+    activities.push(activity);
+  }
+  return activities;
+}
+
+async function getScheduleUsers(scheduleId: number) {
+  return prisma.schedule.findUnique({
+    where: {
+      id: scheduleId,
+    },
+    include: {
+      UserActivity: {
+        select: {
+          userId: true,
+        },
+      },
+    },
+  });
+}
+
+const activitiesRepositoy = { getDates, getPlaces, getActivitiesByPlaceAndDate, getUserActivities, getScheduleUsers };
 export default activitiesRepositoy;
