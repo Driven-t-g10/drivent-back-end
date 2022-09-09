@@ -8,20 +8,14 @@ async function getActivityById(activityId: number) {
   });
 }
 
-async function getActivitiesByUserId(userId: number) {
-  return prisma.activity.findMany({
+async function getActivityByScheduleId(scheduleId: number) {
+  return prisma.activity.findFirst({
     where: {
-      UserActivity: {
-        some: { User: { id: userId } },
+      Schedule: {
+        some: {
+          id: scheduleId,
+        },
       },
-    },
-  });
-}
-
-async function getUsersActivitiesByActivityId(activityId: number) {
-  return prisma.userActivity.findMany({
-    where: {
-      activityId,
     },
   });
 }
@@ -46,15 +40,6 @@ async function getPlaces() {
   });
 }
 
-async function setUserActivity(userId: number, activityId: number) {
-  return prisma.userActivity.create({
-    data: {
-      userId,
-      activityId,
-    },
-  });
-}
-
 async function getActivitiesByPlaceAndDate(place: string, date: string) {
   return prisma.activity.findMany({
     where: {
@@ -65,19 +50,65 @@ async function getActivitiesByPlaceAndDate(place: string, date: string) {
         where: {
           date,
         },
+        include: {
+          UserActivity: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      },
+    },
+  });
+}
+
+async function getUserActivities(userId: number) {
+  const schedulesIds = await prisma.userActivity.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      scheduleId: true,
+    },
+  });
+  const activities = [];
+  for (const scheduleId of schedulesIds) {
+    const activity = await prisma.schedule.findUnique({
+      where: {
+        id: scheduleId.scheduleId,
+      },
+      include: {
+        Activity: true,
+      },
+    });
+    activities.push(activity);
+  }
+  return activities;
+}
+
+async function getScheduleUsers(scheduleId: number) {
+  return prisma.schedule.findUnique({
+    where: {
+      id: scheduleId,
+    },
+    include: {
+      UserActivity: {
+        select: {
+          userId: true,
+        },
       },
     },
   });
 }
 
 const activitiesRepositoy = {
+  getActivityById,
+  getActivityByScheduleId,
+  getActivitiesByPlaceAndDate,
   getDates,
   getPlaces,
-  getActivitiesByPlaceAndDate,
-  setUserActivity,
-  getActivityById,
-  getUsersActivitiesByActivityId,
-  getActivitiesByUserId,
   getScheduleByActivityId,
+  getUserActivities,
+  getScheduleUsers,
 };
 export default activitiesRepositoy;

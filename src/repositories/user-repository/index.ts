@@ -30,9 +30,22 @@ async function findByGithubId(githubId: string) {
   });
 }
 
+async function findByScheduleId(scheduleId: number) {
+  return prisma.user.findMany({
+    where: {
+      UserActivity: {
+        some: {
+          scheduleId,
+        },
+      },
+    },
+  });
+}
+
 const userRepository = {
   findByEmail,
   findByGithubId,
+  findByScheduleId,
   create,
 };
 
