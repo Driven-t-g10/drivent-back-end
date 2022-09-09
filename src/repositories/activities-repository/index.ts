@@ -22,6 +22,13 @@ async function getActivitiesByPlaceAndDate(place: string, date: string) {
         where: {
           date,
         },
+        include: {
+          UserActivity: {
+            select: {
+              userId: true,
+            },
+          },
+        },
       },
     },
   });
