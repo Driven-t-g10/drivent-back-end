@@ -1,5 +1,5 @@
 import app, { init } from '@/app';
-import { prisma } from '@/config';
+import { disconnectDB, prisma } from '@/config';
 import { generateCPF, getStates } from '@brazilian-utils/brazilian-utils';
 import faker from '@faker-js/faker';
 import dayjs from 'dayjs';
@@ -12,6 +12,10 @@ import { cleanDb, generateValidToken } from '../helpers';
 beforeAll(async () => {
   await init();
   await cleanDb();
+});
+
+afterAll(async () => {
+  disconnectDB();
 });
 
 const server = supertest(app);

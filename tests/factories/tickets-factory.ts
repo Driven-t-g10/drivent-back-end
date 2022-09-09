@@ -10,7 +10,6 @@ export function createTicket(params: Partial<Ticket> = {}): Promise<Ticket> {
       name: params.name || ticketTypes[faker.datatype.number({ min: 0, max: 1 })],
       price: params.price || faker.datatype.number({ min: 100, max: 2000 }),
       quantity: params.quantity || faker.datatype.number({ min: 1, max: 10 }),
-      eventId: params.eventId || null,
     },
   });
 }
