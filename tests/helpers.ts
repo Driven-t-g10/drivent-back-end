@@ -13,7 +13,6 @@ export async function cleanDb() {
   await prisma.userRoom.deleteMany({});
   await prisma.room.deleteMany({});
   await prisma.hotel.deleteMany({});
-  await redis.del('event');
   await prisma.session.deleteMany({});
   await prisma.user.deleteMany({});
 }

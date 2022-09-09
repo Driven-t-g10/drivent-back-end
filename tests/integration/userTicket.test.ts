@@ -2,7 +2,6 @@ import app, { init } from '@/app';
 import { disconnectDB } from '@/config';
 import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
-import { number } from 'joi';
 import supertest from 'supertest';
 import {
   createEnrollmentWithAddress,
@@ -22,9 +21,7 @@ beforeAll(async () => {
   await init();
 });
 
-afterAll(async () => {
-  disconnectDB();
-});
+// afterEach(() => disconnectDB());
 
 const server = supertest(app);
 

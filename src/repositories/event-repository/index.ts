@@ -4,6 +4,9 @@ import { eventSeedData } from '@/utils/eventSeedData';
 async function findFirst() {
   const cacheKey = 'event';
   // const EXPIRATION = 3600 * 6;
+  if (process.env.MODE === 'test') {
+    return eventSeedData();
+  }
 
   try {
     const cachedEvent = await redis.get(cacheKey);

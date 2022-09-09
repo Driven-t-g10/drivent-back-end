@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
 import faker from '@faker-js/faker';
-import { redis } from '@/config';
 
 interface Event {
   title: string;
@@ -17,6 +16,5 @@ export function createEvent(params: Partial<Event> = {}) {
     startsAt: params.startsAt || dayjs().subtract(1, 'day').toDate(),
     endsAt: params.endsAt || dayjs().add(5, 'days').toDate(),
   };
-  redis.set('event', JSON.stringify(data));
   return data;
 }

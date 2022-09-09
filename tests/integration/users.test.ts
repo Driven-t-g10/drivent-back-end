@@ -1,21 +1,16 @@
 import app, { init } from '@/app';
-import { disconnectDB, prisma } from '@/config';
+import { prisma } from '@/config';
 import { duplicatedEmailError } from '@/services/users-service';
 import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
-import { redis } from '@/config';
 import { createEvent, createUser } from '../factories';
 import { cleanDb } from '../helpers';
 
 beforeAll(async () => {
   await init();
   await cleanDb();
-});
-
-afterAll(async () => {
-  disconnectDB();
 });
 
 const server = supertest(app);
@@ -43,7 +38,6 @@ describe('POST /users', () => {
 
     describe('when event started', () => {
       beforeAll(async () => {
-        redis.del('event');
         await createEvent();
       });
 
