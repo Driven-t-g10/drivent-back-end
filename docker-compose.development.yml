@@ -24,6 +24,7 @@ services:
     volumes:
       - drivent-postgres-data:/var/lib/postgresql/data
     command: postgres -p ${POSTGRES_PORT}
+
   drivent-development:
     build:
       context: .
@@ -38,7 +39,7 @@ services:
         max-size: '10m'
         max-file: '5'
     working_dir: /usr/src/drivent
-    command: bash -c "npx prisma generate && npm run dev"
+    command: bash -c "npx prisma migrate dev && npx prisma generate && npm run dev"
     environment:
       NODE_ENV: development
     volumes:

@@ -1,9 +1,14 @@
 import app, { init } from '@/app';
+import { disconnectDB } from '@/config';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
 
 beforeAll(async () => {
   await init();
+});
+
+afterAll(async () => {
+  disconnectDB();
 });
 
 const server = supertest(app);

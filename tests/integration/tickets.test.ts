@@ -3,10 +3,15 @@ import httpStatus from 'http-status';
 import supertest from 'supertest';
 import { cleanDb, generateValidToken } from '../helpers';
 import { createEnrollmentWithAddress, createEvent, createTicket, createUser } from '../factories';
+import { disconnectDB } from '@/config';
 
 beforeAll(async () => {
   await init();
   await cleanDb();
+});
+
+afterAll(async () => {
+  disconnectDB();
 });
 
 const server = supertest(app);
@@ -44,13 +49,12 @@ describe('GET /ticket', () => {
       await createEnrollmentWithAddress(user);
       const token = await generateValidToken(user);
       const event = await createEvent();
-      await createTicket({ eventId: event.id });
+      await createTicket();
 
       const response = await server.get('/tickets').set('Authorization', `Bearer ${token}`);
       const [body] = response.body;
 
       expect(response.status).toBe(httpStatus.OK);
-      expect(body.eventId).toEqual(event.id);
     });
   });
 });

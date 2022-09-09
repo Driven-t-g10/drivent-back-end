@@ -32,19 +32,14 @@ async function findByGithubId(githubId: string) {
 
 async function findByScheduleId(scheduleId: number) {
   return prisma.user.findMany({
-    where: {
-      schedules: {
-        some: {
-          id: scheduleId,
-        },
-      },
-    },
+    where: { UserActivity: { some: { scheduleId } } },
   });
 }
 
 const userRepository = {
   findByEmail,
   findByGithubId,
+  findByScheduleId,
   create,
 };
 

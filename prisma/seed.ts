@@ -74,6 +74,97 @@ async function main() {
       }
     }
   }
+
+  const activity = await prisma.activity.findFirst();
+  if (!activity) {
+    await prisma.activity.create({
+      data: {
+        name: 'Minecraft: montando o PC ideal',
+        place: 'Auditório Principal',
+        vacancy: 27,
+      },
+    });
+    await prisma.activity.create({
+      data: {
+        name: 'LoL: montando o PC ideal',
+        place: 'Auditório Principal',
+        vacancy: 1,
+      },
+    });
+    await prisma.activity.create({
+      data: {
+        name: 'Palestra x',
+        place: 'Auditório Lateral',
+        vacancy: 27,
+      },
+    });
+    await prisma.activity.create({
+      data: {
+        name: 'Palestra y',
+        place: 'Sala de Workshop',
+        vacancy: 27,
+      },
+    });
+    await prisma.activity.create({
+      data: {
+        name: 'Palestra z',
+        place: 'Sala de Workshop',
+        vacancy: 1,
+      },
+    });
+
+    for (let i = 0; i < 3; i++) {
+      let date: string;
+      if (i === 0) date = 'Sexta, 22/10';
+      else if (i === 1) date = 'Sábado, 23/10';
+      else date = 'Domingo, 24/10';
+
+      await prisma.schedule.create({
+        data: {
+          date,
+          activityId: 1,
+          startTime: '09:00',
+          endTime: '10:00',
+        },
+      });
+
+      await prisma.schedule.create({
+        data: {
+          date,
+          activityId: 2,
+          startTime: '10:00',
+          endTime: '11:00',
+        },
+      });
+
+      await prisma.schedule.create({
+        data: {
+          date,
+          activityId: 3,
+          startTime: '09:00',
+          endTime: '11:00',
+        },
+      });
+
+      await prisma.schedule.create({
+        data: {
+          date,
+          activityId: 4,
+          startTime: '09:00',
+          endTime: '10:00',
+        },
+      });
+
+      await prisma.schedule.create({
+        data: {
+          date,
+          activityId: 5,
+          startTime: '10:00',
+          endTime: '11:00',
+        },
+      });
+    }
+  }
 }
 
 main()
