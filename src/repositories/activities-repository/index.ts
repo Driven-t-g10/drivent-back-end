@@ -2,13 +2,15 @@ import { prisma } from '@/config';
 
 async function getDates() {
   return prisma.schedule.groupBy({
-    by: ['date'],
+    by: ['date', 'createdAt'],
+    orderBy: { createdAt: 'asc' },
   });
 }
 
 async function getPlaces() {
   return prisma.activity.groupBy({
-    by: ['place'],
+    by: ['place', 'createdAt'],
+    orderBy: { createdAt: 'asc' },
   });
 }
 
