@@ -5,6 +5,7 @@ import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
+import { redis } from '@/config';
 import { createEvent, createUser } from '../factories';
 import { cleanDb } from '../helpers';
 
@@ -36,26 +37,9 @@ describe('POST /users', () => {
       password: faker.internet.password(6),
     });
 
-    it('should respond with status 400 when there is no event', async () => {
-      const body = generateValidBody();
-
-      const response = await server.post('/users').send(body);
-
-      expect(response.status).toBe(httpStatus.BAD_REQUEST);
-    });
-
-    it('should respond with status 400 when current event did not started yet', async () => {
-      const event = await createEvent({ startsAt: dayjs().add(1, 'day').toDate() });
-      const body = generateValidBody();
-
-      const response = await server.post('/users').send(body).query({ eventId: event.id });
-
-      expect(response.status).toBe(httpStatus.BAD_REQUEST);
-    });
-
     describe('when event started', () => {
       beforeAll(async () => {
-        await prisma.event.deleteMany({});
+        redis.del('event');
         await createEvent();
       });
 

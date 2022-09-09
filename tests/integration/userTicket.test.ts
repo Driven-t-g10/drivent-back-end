@@ -2,6 +2,7 @@ import app, { init } from '@/app';
 import { disconnectDB } from '@/config';
 import faker from '@faker-js/faker';
 import httpStatus from 'http-status';
+import { number } from 'joi';
 import supertest from 'supertest';
 import {
   createEnrollmentWithAddress,
@@ -44,7 +45,7 @@ describe('GET /userTicket', () => {
       await createEnrollmentWithAddress(user);
       const token = await generateValidToken(user);
       const event = await createEvent();
-      const ticket = await createTicket({ eventId: event.id });
+      const ticket = await createTicket();
       await createUserTicket({ userId: user.id, ticketId: ticket.id });
 
       const response = await server.get('/user-ticket').set('Authorization', `Bearer ${token}`);
@@ -80,7 +81,7 @@ describe('POST /userTicket', () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const event = await createEvent();
-      const ticket = await createTicket({ eventId: event.id });
+      const ticket = await createTicket();
       const token = await generateValidToken(user);
 
       const response = await server
@@ -112,7 +113,7 @@ describe('POST /userTicket', () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const event = await createEvent();
-      const ticket = await createTicket({ eventId: event.id });
+      const ticket = await createTicket();
       const token = await generateValidToken(user);
 
       const response = await server.post(`/user-ticket/${ticket.id}`).set('Authorization', `Bearer ${token}`);
@@ -153,7 +154,7 @@ describe('PATCH /user-ticket/payment/:id', () => {
     const user = await createUser();
     await createEnrollmentWithAddress(user);
     const event = await createEvent();
-    const ticket = await createTicket({ eventId: event.id });
+    const ticket = await createTicket();
     const userTicket = await createUserTicket({ userId: user.id, ticketId: ticket.id });
     const token = await generateValidToken(user);
 
