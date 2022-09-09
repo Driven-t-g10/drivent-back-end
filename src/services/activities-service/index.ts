@@ -1,11 +1,23 @@
 import activitiesRepositoy from '@/repositories/activities-repository';
 
 async function getDates() {
-  return activitiesRepositoy.getDates();
+  const dates = await activitiesRepositoy.getDates();
+  let datesArr = dates.map((date) => date.date);
+  datesArr = datesArr.filter((i, pos) => datesArr.indexOf(i) === pos);
+  const result = datesArr.map((date) => {
+    return { date };
+  });
+  return result;
 }
 
 async function getPlaces() {
-  return activitiesRepositoy.getPlaces();
+  const places = await activitiesRepositoy.getPlaces();
+  let placesArr = places.map((place) => place.place);
+  placesArr = placesArr.filter((i, pos) => placesArr.indexOf(i) === pos);
+  const result = placesArr.map((place) => {
+    return { place };
+  });
+  return result;
 }
 
 async function getActivitiesByPlaceAndDate(place: string, date: string) {
