@@ -19,6 +19,19 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Environment variables setup
+        uses: SpicyPizza/create-envfile@v1.3
+        with:
+          envkey_POSTGRES_USERNAME: postgres
+          envkey_POSTGRES_PASSWORD: top_secret
+          envkey_POSTGRES_HOST: drivent-postgres-test
+          envkey_POSTGRES_PORT: 5432
+          envkey_POSTGRES_DB: drivent_test
+          envkey_MODE: test
+          envkey_JWT_SECRET: top_secret
+          envkey_DATABASE_URL: postgres://postgres:top_secret@drivent-postgres-test:5432/drivent_test?schema=public
+          file_name: .env.test
+
       - name: Build
         run: npm run ci:build
 
