@@ -3,6 +3,12 @@ import { conflictError, notFoundError } from '@/errors';
 import userRepository from '@/repositories/user-repository';
 import scheduleRepository from '@/repositories/schedule-repository';
 import activitiesRepositoy from '@/repositories/activities-repository';
+import dayjs from 'dayjs';
+import isLeapYear from 'dayjs/plugin/isLeapYear';
+import locale from 'dayjs/locale/pt-br';
+
+dayjs.extend(isLeapYear);
+dayjs.locale(locale);
 
 async function setUserSchedule(userId: number, scheduleId: number) {
   const chosenSchedule = await scheduleRepository.getById(scheduleId);
@@ -67,10 +73,24 @@ function activityHasScheduleConflict(userSchedule: Schedule, chosenSchedule: Sch
 }
 
 function getInterval(schedule: Schedule) {
-  const start = parseInt(schedule.startTime);
-  const end = parseInt(schedule.endTime);
+  const start = convertToMilliseconds(schedule, schedule.startTime);
+  const end = convertToMilliseconds(schedule, schedule.endTime);
 
   return { start, end };
+}
+
+function convertToMilliseconds(schedule: Schedule, time: string) {
+  const [, date] = schedule.date.split(',');
+  const [day, month] = date.split('/');
+  const [hour, minute] = time.split(':');
+
+  const scheduleDate = new Date();
+  scheduleDate.setMonth(parseInt(month) - 1);
+  scheduleDate.setDate(parseInt(day));
+  scheduleDate.setHours(parseInt(hour));
+  scheduleDate.setMinutes(parseInt(minute));
+
+  return scheduleDate.getMilliseconds();
 }
 
 function compareIntervals(userScheduleInterval: number, chosenScheduleInterval: { start: number; end: number }) {
