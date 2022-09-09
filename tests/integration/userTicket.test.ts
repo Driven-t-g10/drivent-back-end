@@ -49,7 +49,6 @@ describe('GET /userTicket', () => {
       const user = await createUser();
       await createEnrollmentWithAddress(user);
       const token = await generateValidToken(user);
-      const event = await createEvent();
       const ticket = await createTicket();
       await createUserTicket({ userId: user.id, ticketId: ticket.id });
 

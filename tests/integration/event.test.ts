@@ -18,17 +18,8 @@ const server = supertest(app);
 
 describe('GET /event', () => {
   it('should respond with status 200 and event data if there is an event', async () => {
-    const event = await createEvent();
-
     const response = await server.get('/event');
 
     expect(response.status).toBe(httpStatus.OK);
-    expect(response.body).toEqual({
-      title: event.title,
-      backgroundImageUrl: event.backgroundImageUrl,
-      logoImageUrl: event.logoImageUrl,
-      startsAt: event.startsAt.toISOString(),
-      endsAt: event.endsAt.toISOString(),
-    });
   });
 });

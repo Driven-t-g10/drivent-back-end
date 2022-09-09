@@ -5,7 +5,6 @@ import { faker } from '@faker-js/faker';
 import dayjs from 'dayjs';
 import httpStatus from 'http-status';
 import supertest from 'supertest';
-import { redis } from '@/config';
 import { createEvent, createUser } from '../factories';
 import { cleanDb } from '../helpers';
 
@@ -43,7 +42,6 @@ describe('POST /users', () => {
 
     describe('when event started', () => {
       beforeAll(async () => {
-        redis.del('event');
         await createEvent();
       });
 
