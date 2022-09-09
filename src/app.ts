@@ -6,7 +6,10 @@ import cors from 'cors';
 import { loadEnv, connectDb, disconnectDB, redisClient } from '@/config';
 
 loadEnv();
-redisClient();
+if (process.env.NODE_ENV !== 'test') {
+  console.log('rodando redis client');
+  redisClient();
+}
 
 import { handleApplicationErrors } from '@/middlewares';
 import {
