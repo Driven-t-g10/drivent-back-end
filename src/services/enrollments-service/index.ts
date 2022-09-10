@@ -1,5 +1,5 @@
 import { notFoundError } from '@/errors';
-import { CreateAddressParams } from '@/repositories/address-repository';
+import addressRepository, { CreateAddressParams } from '@/repositories/address-repository';
 import enrollmentRepository, { CreateEnrollmentParams } from '@/repositories/enrollment-repository';
 import { exclude } from '@/utils/prisma-utils';
 import { Address, Enrollment } from '@prisma/client';
@@ -31,8 +31,14 @@ type GetAddressResult = Omit<Address, 'createdAt' | 'updatedAt' | 'enrollmentId'
 async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollmentWithAddress) {
   const enrollment = exclude(params, 'address');
   const address = getAddressForUpsert(params.address);
-
-  await enrollmentRepository.upsert(params.userId, enrollment, exclude(enrollment, 'userId'), address, address);
+  const enrollmentExists = await enrollmentRepository.findByUserId(enrollment.userId);
+  if (enrollmentExists) {
+    const enrollmentId = enrollmentExists.id;
+    await enrollmentRepository.update(params.userId, enrollmentId, exclude(enrollment, 'userId'), address);
+  } else {
+    const createdEnrollment = await enrollmentRepository.create(enrollment);
+    await addressRepository.create(address, createdEnrollment.id);
+  }
 }
 
 function getAddressForUpsert(address: CreateAddressParams) {
